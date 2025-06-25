@@ -174,6 +174,13 @@ def picard(X, fun='tanh', n_components=None, ortho=True, extended=None,
         K = (u / d).T[:n_components]
         del u, d
         K *= np.sqrt(p)
+        
+        # enforce fixed‐sign for consistency with MATLAB code
+        for i in range(K.shape[0]):
+            j = np.argmax(np.abs(K[i]))
+            if K[i, j] < 0:
+                K[i] = -K[i] # inverts the sign of the i-th row of the matrix K
+                    
         X1 = np.dot(K, X1)
         covariance = np.eye(n_components)  # For extended
     else:

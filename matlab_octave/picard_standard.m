@@ -1,4 +1,4 @@
-function [Y, W] = picard_standard(X, m, maxiter, precon, tol, lambda_min, ls_tries, verbose)
+function [Y, W] = picard_standard(X, m, maxiter, precon, tol, lambda_min, ls_tries, verbose, distribution, renormalization)
 % Runs the Picard algorithm
 %
 % The algorithm is detailed in::
@@ -45,6 +45,12 @@ function [Y, W] = picard_standard(X, m, maxiter, precon, tol, lambda_min, ls_tri
 % verbose : boolean
 %     If true, prints the informations about the algorithm.
 %
+% distribution : string, 'logistic' or 'logcosh'
+%     The distribution to use for the score function.
+%
+% renormalization : string, 'original' or 'pythonlike'
+%     The method for Hessian renormalization.
+%
 % Returns
 % -------
 % Y : array, shape (N, T)
@@ -59,6 +65,14 @@ function [Y, W] = picard_standard(X, m, maxiter, precon, tol, lambda_min, ls_tri
 %
 % License: BSD (3-clause)
 
+% Set defaults for new parameters
+if nargin < 9 || isempty(distribution)
+    distribution = 'logistic';
+end
+if nargin < 10 || isempty(renormalization)
+    renormalization = 'original';
+end
+
 % Init
 [N, T] = size(X);
 W = eye(N);
@@ -70,9 +84,14 @@ current_loss = loss(Y, W);
 
 for n_top = 1:maxiter
     % Compute the score function
-    thY = tanh(Y / 2.);
+    if strcmp(distribution, 'logistic')
+        psiY = tanh(Y / 2.);
+    else % logcosh
+        psiY = tanh(Y);
+    end
     % Compute the relative gradient
-    G = (thY * Y') / T - eye(N);
+    G = (psiY * Y') / T - eye(N);
+    
     % Stopping criterion
     G_norm = max(max(abs(G)));
     if G_norm < tol
@@ -92,7 +111,7 @@ for n_top = 1:maxiter
     end
     G_old = G;
     % Find the L-BFGS direction
-    direction = l_bfgs_direction(Y, thY, G, s_list, y_list, r_list, precon, lambda_min);
+    direction = l_bfgs_direction(Y, psiY, G, s_list, y_list, r_list, precon, lambda_min);
     % Do a line_search in that direction:
     [converged, new_Y, new_W, new_loss, direction] = line_search(Y, W, direction, current_loss, ls_tries, verbose);
     if ~converged
@@ -106,19 +125,26 @@ for n_top = 1:maxiter
     W = new_W;
     current_loss = new_loss;
     if verbose
-        fprintf('iteration %d, gradient norm = %.4g\n', n_top, G_norm)
+        fprintf('iteration %d, gradient norm = %.6g loss = %.6g\n', n_top, G_norm, current_loss)
     end
 end
 
-function [loss] = loss(Y, W)
+function [loss_val] = loss(Y, W)
     %
     % Computes the loss function for Y, W
     %
     N = size(Y, 1);
-    loss = - log(det(W));
-    for n=1:N
-        y = Y(n, :);
-        loss = loss + mean(abs(y) + 2. * log1p(exp(-abs(y))));
+    loss_val = - log(det(W));
+    if strcmp(distribution, 'logistic')
+        for n=1:N
+            y = Y(n, :);
+            loss_val = loss_val + mean(abs(y) + 2. * log1p(exp(-abs(y))));
+        end
+    else % logcosh
+        for k = 1:N
+            y = Y(k, :);
+            loss_val = loss_val + mean( abs(y) + log1p( exp(-2*abs(y)) ) );
+        end
     end
 end
 
@@ -148,7 +174,7 @@ function [converged, Y_new, W_new, new_loss, rel_step] = line_search(Y, W, direc
     rel_step = alpha * direction;
 end
 
-function [direction] = l_bfgs_direction(Y, thY, G, s_list, y_list, r_list, precon, lambda_min)
+function [direction] = l_bfgs_direction(Y, psiY, G, s_list, y_list, r_list, precon, lambda_min)
     q = G;
     a_list = {};
     for ii=1:length(s_list)
@@ -159,7 +185,7 @@ function [direction] = l_bfgs_direction(Y, thY, G, s_list, y_list, r_list, preco
         a_list{end + 1} = alpha;
         q = q - alpha * y;
     end
-    z = solve_hessian(q, Y, thY, precon, lambda_min);
+    z = solve_hessian(q, Y, psiY, precon, lambda_min);
     for ii=1:length(s_list)
         s = s_list{ii};
         y = y_list{ii};
@@ -171,10 +197,29 @@ function [direction] = l_bfgs_direction(Y, thY, G, s_list, y_list, r_list, preco
     direction = -z;
 end
 
-function [out] = solve_hessian(G, Y, thY, precon, lambda_min)
+function a = regularize_hessian_pythonlike(a, lam)
+    N = size(a, 1);
+    % compute the smaller eigenvalue of each 2×2 block
+    e = 0.5*(a + a' - sqrt((a - a').^2 + 4));
+    % find entries where that eigenvalue is below lam (excluding diagonal)
+    mask = e < lam;
+    mask(1:(N+1):N*N) = false;
+    [i, j] = find(mask);
+    if ~isempty(i)
+        idx = sub2ind([N, N], i, j);
+        % shift those entries so that their block eigenvalue equals lam
+        a(idx) = a(idx) + (lam - e(idx));
+    end
+end
+
+function [out] = solve_hessian(G, Y, psiY, precon, lambda_min)
     [N, T] = size(Y);
     % Compute the derivative of the score
-    psidY = (- thY.^2 + 1.) / 2.;
+    if strcmp(distribution, 'logistic')
+        psidY = (- psiY.^2 + 1.) / 2.;
+    else % logcosh
+        psidY = 1 - psiY.^2;
+    end
     % Build the diagonal of the Hessian, a.
     Y_squared = Y.^2;
     if precon == 2
@@ -188,13 +233,18 @@ function [out] = solve_hessian(G, Y, thY, precon, lambda_min)
     else
         error('precon should be 1 or 2')
     end
-    % Compute the eigenvalues of the Hessian
-    eigenvalues = 0.5 * (a + a' - sqrt((a - a').^2 + 4.));
+
     % Regularize
-    problematic_locs = eigenvalues < lambda_min;
-    problematic_locs(1:(N+1):N*N) = false;
-    [i_pb, j_pb] = find(problematic_locs);
-    a(i_pb, j_pb) = a(i_pb, j_pb) + lambda_min - eigenvalues(i_pb, j_pb);
+    if strcmp(renormalization, 'original')
+        eigenvalues = 0.5 * (a + a' - sqrt((a - a').^2 + 4.));
+        problematic_locs = eigenvalues < lambda_min;
+        problematic_locs(1:(N+1):N*N) = false;
+        [i_pb, j_pb] = find(problematic_locs);
+        a(i_pb, j_pb) = a(i_pb, j_pb) + lambda_min - eigenvalues(i_pb, j_pb);
+    else % pythonlike
+        a = regularize_hessian_pythonlike(a, lambda_min);
+    end
+    
     % Invert the transform
     out = (G .* a' - G') ./ (a .* a' - 1.);
 end
