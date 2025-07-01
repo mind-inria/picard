@@ -6,7 +6,7 @@ jobs:
           ignore:
             - gh-pages
       docker:
-        - image: cimg/python:3.12.1
+        - image: cimg/python:3.12-browsers
       steps:
         - checkout
         - run:
