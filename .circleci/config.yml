@@ -18,18 +18,6 @@ jobs:
               echo "BASH_ENV:"
               cat $BASH_ENV
 
-        - run:
-            name: Merge with upstream
-            command: |
-              echo $(git log -1 --pretty=%B) | tee gitlog.txt
-              echo ${CI_PULL_REQUEST//*pull\//} | tee merge.txt
-              if [[ $(cat merge.txt) != "" ]]; then
-                echo "Merging $(cat merge.txt)";
-                git remote add upstream git://github.com/mind-inria/picard.git;
-                git pull --ff-only upstream "refs/pull/$(cat merge.txt)/merge";
-                git fetch upstream master;
-              fi
-
         # Load our data
         - restore_cache:
             keys:
