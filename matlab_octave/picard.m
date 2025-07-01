@@ -25,7 +25,7 @@ function [Y, W] = picard(X, varargin)
 %
 % 'maxiter'                   (int) Maximal number of iterations for the
 %                             algorithm.
-%                             Default : 500
+%                             Default : 100
 %
 % 'mode'                      (string) Chooses to run the orthogonal
 %                             (Picard-O) or unconstrained version of
@@ -60,6 +60,25 @@ function [Y, W] = picard(X, varargin)
 %                             the algorithm.
 %                             Default: false
 %
+% 'w_init'                    (matrix) Initial rotation matrix for the
+%                             algorithm.
+%                             Default: empty (identity matrix)
+%
+% 'python_defaults'           (bool) If true, uses Python-compatible
+%                             defaults for the algorithm.
+%                             Default: false
+%
+% 'distribution'              (string) Distribution used for the
+%                             distribution-based ICA.
+%                             Possible values:
+%                             'logistic' (default)
+%                             'logcosh'
+%
+% 'renormalization'           (string) Renormalization method used for the
+%                             distribution-based ICA.
+%                             Possible values:
+%                             'original' (default)
+%                             'pythonlike'
 %
 % Example:
 % --------
@@ -88,10 +107,10 @@ if length(size(X)) > 2,
     error('Input signals should be two dimensional');
 end
 
-if ~isa (X, 'double'),
-  fprintf ('Converting input signals to double...');
-  X = double(X);
-end
+% if ~isa (X, 'double'),
+%   fprintf ('Converting input signals to double...');
+%   X = double(X);
+% end
 
 [N, T] = size(X);
 
@@ -102,7 +121,7 @@ end
 % Default parameters
 
 m = 7;
-maxiter = 500;
+maxiter = 100;
 mode = 'ortho';
 tol = 1e-8;
 lambda_min = 0.01;
@@ -112,6 +131,10 @@ verbose = false;
 n_components = size(X, 1);
 centering = false;
 whitening_mode = 'sph';
+w_init = [];
+python_defaults = false;
+distribution = 'logistic';
+renormalization = 'original';
 
 % Read varargin
 
@@ -144,8 +167,43 @@ for i = 1:2:length(varargin)
             centering = value;
         case 'verbose'
             verbose = value;
+        case 'w_init'
+            w_init = value;
+        case 'python_defaults'
+            python_defaults = value;
+        case 'distribution'
+            distribution = value;
+        case 'renormalization'
+            renormalization = value;
         otherwise
             error(['Parameter ''' param ''' unknown'])
+    end
+end
+
+if python_defaults
+    maxiter = 512;
+    tol = 1e-7;
+    m = 10;
+    centering = true;
+    distribution = 'logcosh';
+    renormalization = 'pythonlike';
+    whitening_mode = 'pca';
+    if verbose
+        disp('Using Python-compatible defaults.');
+    end
+end
+
+if isempty(w_init)
+    if python_defaults
+        if verbose, disp('Using random w_init.'); end
+        if exist('OCTAVE_VERSION','builtin') ~= 0
+            w_init = random_init_octave(n_components); % Random orthogonal matrix
+        else
+            w_init = random_init(n_components); % Random orthogonal matrix
+        end
+        w_init = sym_decorrelation(w_init);
+    else
+        w_init = eye(n_components); % Default identity
     end
 end
 
@@ -153,9 +211,9 @@ if whiten == false && n_components ~= size(X, 1),
     error('PCA works only if whiten=true')
 end
 
-if n_components > getrank(X),
+if n_components ~= getrank(X),
     warning(['Input matrix is of deficient rank. ' ...
-            'Please consider reducing the dimensionality (e.g. with PCA) prior to ICA.'])
+            'Please consider to reduce dimensionality (pca) prior to ICA.'])
 end
 
 if centering,
@@ -168,21 +226,31 @@ if whiten,
     [X_white, W_white] = whitening(X, whitening_mode, n_components);
 else
     X_white = X;
-    W_white = eye(N);
+    W_white = eye(n_components);
 end
 
-% Run ICA
+% Handle w_init (the initial rotation)
+if isempty(w_init)
+    if python_defaults
+        if verbose, disp('Using random w_init.'); end
+        w_init = random_init(n_components); % Random orthogonal matrix
+    else
+        w_init = eye(n_components); % Default identity
+    end
+end
+X_white = w_init * X_white;
 
+% Run ICA
 switch mode
     case 'ortho'
-        [Y, W] = picardo(X_white, m, maxiter, tol, lambda_min, ls_tries, verbose);
+        [Y, W_algo] = picardo(X_white, m, maxiter, tol, lambda_min, ls_tries, verbose);
     case 'standard'
-        [Y, W] = picard_standard(X_white, m, maxiter, 2, tol, lambda_min, ls_tries, verbose);
+        [Y, W_algo] = picard_standard(X_white, m, maxiter, 2, tol, lambda_min, ls_tries, verbose, distribution, renormalization);
     otherwise
         error('Wrong ICA mode')
 end
 
-W = W * W_white;
+W = W_algo * w_init * W_white;
 end
 
 function tmprank2 = getrank(tmpdata)
@@ -197,6 +265,63 @@ function tmprank2 = getrank(tmpdata)
     tmprank2=sum (diag (D) > rankTolerance);
     if tmprank ~= tmprank2
         fprintf('Warning: fixing rank computation inconsistency (%d vs %d) most likely because running under Linux 64-bit Matlab\n', tmprank, tmprank2);
-        tmprank2 = max(tmprank, tmprank2);
+        tmprank2 = min(tmprank, tmprank2);
     end
+end
+
+function w_init = random_init(n_components)
+
+    % same random algorithm as in Python
+    s = RandStream('mt19937ar', 'Seed', 5489, 'NormalTransform', 'Polar');
+    RandStream.setGlobalStream(s);
+
+    % Generate and transpose so positions match NumPy's row-major layout
+    w_init = randn(ceil(n_components*n_components/2)*2,1);
+    w_init = w_init(:);
+
+    w_initTmp = w_init(1:2:end);
+    w_init(1:2:end) = w_init(2:2:end);
+    w_init(2:2:end) = w_initTmp;
+
+    w_init = reshape(w_init(1:n_components*n_components), n_components, n_components)';
+end
+
+function w_init = random_init_octave(n_components)
+    N = ceil(n_components^2/2)*2;
+    rand("seed", 5489);
+    w = zeros(N,1);
+    i = 1;
+    while i <= N
+        u1 = 2*rand(N,1) - 1;
+        u2 = 2*rand(N,1) - 1;
+        s  = u1.^2 + u2.^2;
+        idx = find(s>0 & s<1);
+        r   = sqrt(-2*log(s(idx))./s(idx));
+        z1  = u1(idx).*r;
+        z2  = u2(idx).*r;
+        z   = [z1; z2];
+        take = min(length(z), N - i + 1);
+        w(i:i+take-1) = z(1:take);
+        i = i + take;
+    end
+    tmp       = w(1:2:end);
+    w(1:2:end)= w(2:2:end);
+    w(2:2:end)= tmp;
+    w_init    = w;
+    w_init = reshape(w_init(1:n_components*n_components), n_components, n_components)';
+end
+
+function W = sym_decorrelation(W)
+    %SYMMETRIC DECORRELATION
+    %   W ← (W·Wᵀ)^(-1/2) · W
+    
+    % Eigen-decompose W·Wᵀ
+    [u, S] = eig(W * W.');
+
+    % Extract eigenvalues and form 1./sqrt(s)
+    s = diag(S);
+    inv_sqrt_s = 1 ./ sqrt(s);
+
+    % Reconstruct (W·Wᵀ)^(-1/2) and apply to W
+    W = (u * diag(inv_sqrt_s) * u') * W;
 end
