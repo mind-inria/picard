@@ -23,7 +23,7 @@ from mne.datasets import sample
 
 mne.set_log_level(verbose='CRITICAL')
 data_path = sample.data_path()
-raw_fname = data_path + '/MEG/sample/sample_audvis_filt-0-40_raw.fif'
+raw_fname = data_path / 'MEG/sample/sample_audvis_filt-0-40_raw.fif'
 
 raw = mne.io.read_raw_fif(raw_fname, preload=True)
 raw.filter(1, None, fir_design='firwin')  # already lowpassed @ 40

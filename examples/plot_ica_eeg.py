@@ -29,7 +29,7 @@ print(__doc__)
 ###############################################################################
 # Generate sample EEG data
 data_path = sample.data_path()
-raw_fname = data_path + '/MEG/sample/sample_audvis_filt-0-40_raw.fif'
+raw_fname = data_path / 'MEG/sample/sample_audvis_filt-0-40_raw.fif'
 
 raw = mne.io.read_raw_fif(raw_fname, preload=True)
 raw.filter(1, 40, n_jobs=1)  # 1Hz high pass is often helpful for fitting ICA
