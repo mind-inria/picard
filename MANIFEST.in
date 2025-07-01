@@ -23,3 +23,4 @@ recursive-exclude picard *.pyc
 recursive-exclude doc *
 recursive-exclude matlab_octave *
 recursive-exclude examples/matlab_octave *
+recursive-exclude tests *
