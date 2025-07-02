@@ -3,11 +3,11 @@ Picard : Preconditioned ICA for Real Data
 
 |GHActions|_ |PyPI|_ |Codecov|_ |Downloads|_
 
-.. |GHActions| image:: https://github.com/pierreablin/picard/workflows/unittests/badge.svg?branch=master&event=push
-.. _GHActions: https://github.com/pierreablin/picard/actions
+.. |GHActions| image:: https://github.com/mind-inria/picard/workflows/unittests/badge.svg?branch=master&event=push
+.. _GHActions: https://github.com/mind-inria/picard/actions
 
-.. |Codecov| image:: http://codecov.io/github/pierreablin/picard/coverage.svg?branch=master
-.. _Codecov: http://codecov.io/github/pierreablin/picard?branch=master
+.. |Codecov| image:: http://codecov.io/github/mind-inria/picard/coverage.svg?branch=master
+.. _Codecov: http://codecov.io/github/mind-inria/picard?branch=master
 
 .. |PyPI| image:: https://badge.fury.io/py/python-picard.svg
 .. _PyPI: https://badge.fury.io/py/python-picard
@@ -71,7 +71,7 @@ Then install Picard with pip::
 
 or to get the latest version of the code::
 
-  $ pip install git+https://github.com/pierreablin/picard.git#egg=picard
+  $ pip install git+https://github.com/mind-inria/picard.git#egg=picard
 
 If you do not have admin privileges on the computer, use the ``--user`` flag
 with `pip`. To upgrade, use the ``--upgrade`` flag provided by `pip`.
@@ -90,7 +90,7 @@ and it should not give any error message.
 matlab/octave
 ~~~~~~~~~~~~~
 
-The Matlab/Octave version of Picard and Picard-O is `available here <https://github.com/pierreablin/picard/tree/master/matlab_octave>`_.
+The Matlab/Octave version of Picard and Picard-O is `available here <https://github.com/mind-inria/picard/tree/master/matlab_octave>`_.
 
 Quickstart
 ----------
