@@ -22,9 +22,9 @@ DESCRIPTION = descr
 MAINTAINER = 'Pierre Ablin'
 MAINTAINER_EMAIL = 'pierre.ablin@inria.fr'
 LICENSE = 'BSD (3-clause)'
-DOWNLOAD_URL = 'https://github.com/pierreablin/picard.git'
+DOWNLOAD_URL = 'https://github.com/mind-inria/picard.git'
 VERSION = version
-URL = 'https://pierreablin.github.io/picard'
+URL = 'https://mind-inria.github.io/picard'
 
 
 def package_tree(pkgroot):
