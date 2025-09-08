@@ -18,7 +18,7 @@ Picard : Preconditioned ICA for Real Data
 This repository hosts Python/Octave/Matlab code of the Preconditioned ICA
 for Real Data (Picard) and Picard-O algorithms.
 
-See the `documentation <https://pierreablin.github.io/picard/index.html>`_.
+See the `documentation <https://mind-inria.github.io/picard/>`_.
 
 Algorithm
 ---------
