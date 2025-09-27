@@ -12,6 +12,12 @@ from sklearn.utils import check_random_state, as_float_array
 from sklearn.utils.validation import FLOAT_DTYPES
 from sklearn.utils._param_validation import StrOptions
 
+try:
+    # Available since scikit-learn@1.6.
+    from sklearn.utils.validation import validate_data
+except ImportError:
+    pass
+
 from .solver import picard
 
 
@@ -142,8 +148,16 @@ class Picard(FastICA):
             The estimated sources.
         """
 
-        X = self._validate_data(X, copy=self.whiten, dtype=FLOAT_DTYPES,
-                                ensure_min_samples=2).T
+        try:
+            # BaseEstimator._validate_data has been deprecated since
+            # scikit-learn@1.6, then removed in version 1.7 in favour
+            # of the `validate_data` utility function.
+            X = self._validate_data(X, copy=self.whiten, dtype=FLOAT_DTYPES,
+                                    ensure_min_samples=2).T
+        except AttributeError:
+            X = validate_data(self, X, copy=self.whiten, dtype=FLOAT_DTYPES,
+                              ensure_min_samples=2).T
+
         random_state = check_random_state(self.random_state)
 
         n_features, n_samples = X.shape
