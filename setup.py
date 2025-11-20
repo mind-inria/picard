@@ -1,8 +1,9 @@
 #! /usr/bin/env python
 
 import os
+import re
 from pathlib import Path
-import setuptools  # noqa; we are using a setuptools namespace
+
 from setuptools import setup
 
 
@@ -40,9 +41,7 @@ def package_tree(pkgroot):
 if __name__ == "__main__":
     long_description = Path('README.rst').read_text("utf-8")
     # Remove scale for PyPI
-    long_description = long_description.splitlines()
-    long_description.pop(long_description.index("    :scale: 50 %"))
-    long_description = "\n".join(long_description)
+    long_description = re.sub(r"\s+:scale:.*\n", "", long_description)
     setup(name=DISTNAME,
           maintainer=MAINTAINER,
           maintainer_email=MAINTAINER_EMAIL,
