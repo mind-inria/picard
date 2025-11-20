@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import os
+from pathlib import Path
 import setuptools  # noqa; we are using a setuptools namespace
 from setuptools import setup
 
@@ -8,11 +9,10 @@ from setuptools import setup
 descr = """Preconditoned ICA for Real Data"""
 
 version = None
-with open(os.path.join('picard', '__init__.py'), 'r') as fid:
-    for line in (line.strip() for line in fid):
-        if line.startswith('__version__'):
-            version = line.split('=')[1].strip().strip('\'')
-            break
+for line in (Path('picard') / '__init__.py').read_text("utf-8").splitlines():
+    if line.startswith('__version__'):
+        version = line.split('=')[1].strip().strip('\'')
+        break
 if version is None:
     raise RuntimeError('Could not determine version')
 
@@ -38,6 +38,11 @@ def package_tree(pkgroot):
 
 
 if __name__ == "__main__":
+    long_description = Path('README.rst').read_text("utf-8")
+    # Remove scale for PyPI
+    long_description = long_description.splitlines()
+    long_description.pop(long_description.index("    :scale: 50 %"))
+    long_description = "\n".join(long_description)
     setup(name=DISTNAME,
           maintainer=MAINTAINER,
           maintainer_email=MAINTAINER_EMAIL,
@@ -46,7 +51,7 @@ if __name__ == "__main__":
           version=VERSION,
           url=URL,
           download_url=DOWNLOAD_URL,
-          long_description=open('README.rst').read(),
+          long_description=long_description,
           long_description_content_type='text/x-rst',
           classifiers=['Intended Audience :: Science/Research',
                        'Intended Audience :: Developers',

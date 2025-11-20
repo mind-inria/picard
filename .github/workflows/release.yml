@@ -25,7 +25,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install build twine
+          pip install build twine pillow
       - run: python -m build --sdist --wheel
       - run: twine check --strict dist/*
       - uses: actions/upload-artifact@v5
