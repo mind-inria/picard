@@ -41,7 +41,7 @@ def package_tree(pkgroot):
 if __name__ == "__main__":
     long_description = Path('README.rst').read_text("utf-8")
     # Remove scale for PyPI
-    long_description = re.sub(r"\s+:scale:.*\n", "", long_description)
+    long_description = re.sub(r"\s+:scale:.*\n", "\n", long_description)
     setup(name=DISTNAME,
           maintainer=MAINTAINER,
           maintainer_email=MAINTAINER_EMAIL,
