@@ -7,6 +7,7 @@ import pytest
 
 import numpy as np
 
+from sklearn.decomposition import FastICA
 from sklearn.utils._testing import assert_array_almost_equal
 
 from picard import Picard
@@ -90,3 +91,15 @@ def test_inverse_transform():
 def test_picard_errors():
     with pytest.raises(ValueError, match='max_iter should be greater than 1'):
         Picard(max_iter=0)
+
+
+def test_picard_fastica_fun_parameter_constraints():
+    """Test that the 'fun' parameter constraints have been updated to include
+    'tanh', 'exp', 'cube', and callable.
+    This test ensures that the modifications made to the Picard class to
+    update the parameter constraints for 'fun' do not inadvertently affect
+    the FastICA class from scikit-learn.
+    """
+    picard = Picard()
+    fast_ica = FastICA()
+    assert picard._parameter_constraints != fast_ica._parameter_constraints
