@@ -209,8 +209,7 @@ def picard(X, fun='tanh', n_components=None, ortho=True, extended=None,
               'verbose': verbose, 'ortho': ortho, 'extended': extended,
               'covariance': covariance}
 
-    with np.errstate(over='raise', invalid='raise'):
-        Y, W, infos = core_picard(X1, **kwargs)
+    Y, W, infos = core_picard(X1, **kwargs)
 
     del X1
     W = np.dot(W, w_init)
