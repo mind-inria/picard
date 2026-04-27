@@ -63,6 +63,9 @@ jobs:
               cd ..;
 
         # Deploy docs
+        - add_ssh_keys:
+            fingerprints:
+              - "SHA256:U7MtrRpGxaJO8/JkKkkU5fenqtb7tIQ8Iq4PKZj+aqQ"
         - run:
             name: deploy
             command: |
