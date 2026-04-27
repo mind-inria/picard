@@ -198,14 +198,15 @@ def _line_search(Y, W, density, direction, signs, current_loss, ls_tries,
     if current_loss is None:
         current_loss = _loss(Y, W, density, signs, ortho, extended)
     for _ in range(ls_tries):
-        if ortho:
-            transform = expm(alpha * direction)
-        else:
-            transform = np.eye(N) + alpha * direction
-        Y_new = np.dot(transform, Y)
-        W_new = np.dot(transform, W)
-        new_loss = _loss(Y_new, W_new, density, signs, ortho, extended)
-        if new_loss < current_loss:
+        with np.errstate(over='ignore', invalid='ignore'):
+            if ortho:
+                transform = expm(alpha * direction)
+            else:
+                transform = np.eye(N) + alpha * direction
+            Y_new = np.dot(transform, Y)
+            W_new = np.dot(transform, W)
+            new_loss = _loss(Y_new, W_new, density, signs, ortho, extended)
+        if np.isfinite(new_loss) and new_loss < current_loss:
             return True, Y_new, W_new, new_loss, alpha * direction
         alpha /= 2.
     else:

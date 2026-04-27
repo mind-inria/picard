@@ -272,6 +272,31 @@ def test_no_regression(mode, ortho):
     assert n_mean < nb_mean, err_msg % (mode, ortho, n_mean, nb_mean)
 
 
+def test_line_search_overflow():
+    """Test that _line_search handles expm overflow gracefully.
+
+    Regression test for NumPy 2.x compatibility: when the L-BFGS direction
+    has large entries, expm overflows internally. The line search should
+    reject such steps instead of crashing.
+    """
+    from picard._core_picard import _line_search
+
+    N, T = 5, 1000
+    rng = np.random.RandomState(42)
+    Y = rng.randn(N, T)
+    W = np.eye(N)
+    density = Tanh()
+    signs = np.ones(N)
+
+    # A direction with large diagonal causes expm to overflow internally
+    direction = np.eye(N) * 800
+    with np.errstate(over='raise', invalid='raise'):
+        converged, _, _, _, _ = _line_search(
+            Y, W, density, direction, signs, None, 10, False, True, False
+        )
+    assert not converged
+
+
 def test_amari_distance():
     p = 3
     rng = np.random.RandomState(0)
