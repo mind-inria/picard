@@ -1,24 +1,23 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Comparing Picard and FastICA for the task of detecting ECG artifacts in MEG &#8212; picard 0.8.dev documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <link rel="shortcut icon" href="../_static/picard_logo.ico"/>
+    <title>Comparing Picard and FastICA for the task of detecting ECG artifacts in MEG &#8212; picard 0.8.2 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=6ff1ffd0" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <script src="../_static/documentation_options.js?v=dbee5847"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/sg-tags.js?v=d80f6fa4"></script>
+    <link rel="icon" href="../_static/picard_logo.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
 <meta charset='utf-8'>
@@ -43,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           picard</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.8.dev</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -113,32 +112,32 @@
   
   <div class="sphx-glr-download-link-note admonition note">
 <p class="admonition-title">Note</p>
-<p>Click <a class="reference internal" href="#sphx-glr-download-auto-examples-plot-ecg-detection-py"><span class="std std-ref">here</span></a>
-to download the full example code</p>
+<p><a class="reference internal" href="#sphx-glr-download-auto-examples-plot-ecg-detection-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code.</p>
 </div>
 <section class="sphx-glr-example-title" id="comparing-picard-and-fastica-for-the-task-of-detecting-ecg-artifacts-in-meg">
-<span id="sphx-glr-auto-examples-plot-ecg-detection-py"></span><h1>Comparing Picard and FastICA for the task of detecting ECG artifacts in MEG<a class="headerlink" href="#comparing-picard-and-fastica-for-the-task-of-detecting-ecg-artifacts-in-meg" title="Permalink to this heading">¶</a></h1>
+<span id="sphx-glr-auto-examples-plot-ecg-detection-py"></span><h1>Comparing Picard and FastICA for the task of detecting ECG artifacts in MEG<a class="headerlink" href="#comparing-picard-and-fastica-for-the-task-of-detecting-ecg-artifacts-in-meg" title="Link to this heading">¶</a></h1>
 <p>Picard and FastICA are fitted to MEG data, from several initializations.
 The scores related to the detection of ECG artifacts are displayed for each
 run. Picard is faster, and less dependent on the initialization.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Authors: Pierre Ablin &lt;pierreablin@gmail.com&gt;</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Authors: Pierre Ablin &lt;pierreablin@gmail.com&gt;</span>
 <span class="c1">#          Alexandre Gramfort &lt;alexandre.gramfort@telecom-paristech.fr&gt;</span>
 <span class="c1">#</span>
 <span class="c1"># License: BSD (3-clause)</span>
-<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a>
+<span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a>
 
-<span class="kn">import</span> <span class="nn">mne</span>
-<span class="kn">from</span> <span class="nn">mne.preprocessing</span> <span class="kn">import</span> <span class="n">ICA</span>
-<span class="kn">from</span> <span class="nn">mne.preprocessing</span> <span class="kn">import</span> <span class="n">create_ecg_epochs</span>
-<span class="kn">from</span> <span class="nn">mne.datasets</span> <span class="kn">import</span> <span class="n">sample</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">mne</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mne.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ICA</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mne.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_ecg_epochs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mne.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">sample</span>
 </pre></div>
 </div>
 <p>Setup paths and prepare raw data.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mne</span><span class="o">.</span><span class="n">set_log_level</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="s1">&#39;CRITICAL&#39;</span><span class="p">)</span>
-<span class="n">data_path</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">data_path</span><span class="p">()</span>
-<a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">raw_fname</span></a> <span class="o">=</span> <span class="n">data_path</span> <span class="o">+</span> <span class="s1">&#39;/MEG/sample/sample_audvis_filt-0-40_raw.fif&#39;</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">mne</span><span class="o">.</span><span class="n">set_log_level</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="s1">&#39;CRITICAL&#39;</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">data_path</span></a> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">data_path</span></a><span class="p">()</span>
+<a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">raw_fname</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">data_path</span></a> <span class="o">/</span> <span class="s1">&#39;MEG/sample/sample_audvis_filt-0-40_raw.fif&#39;</span>
 
-<span class="n">raw</span> <span class="o">=</span> <span class="n">mne</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_raw_fif</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">raw_fname</span></a><span class="p">,</span> <span class="n">preload</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">raw</span> <span class="o">=</span> <span class="n">mne</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_raw_fif</span><span class="p">(</span><a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">raw_fname</span></a><span class="p">,</span> <span class="n">preload</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">raw</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fir_design</span><span class="o">=</span><span class="s1">&#39;firwin&#39;</span><span class="p">)</span>  <span class="c1"># already lowpassed @ 40</span>
 <span class="n">raw</span><span class="o">.</span><span class="n">set_annotations</span><span class="p">(</span><span class="n">mne</span><span class="o">.</span><span class="n">Annotations</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="s1">&#39;BAD&#39;</span><span class="p">))</span>
 <span class="c1"># raw.plot(block=True)</span>
@@ -155,7 +154,7 @@ run. Picard is faster, and less dependent on the initialization.</p>
 </div>
 <p>Define a function that fits ICA to the data, identifies bad components
 related to ECG, and plots the resulting scores and topographies.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fit_ica_and_plot_scores</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">method</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">random_state</span></a><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">fit_ica_and_plot_scores</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">method</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">random_state</span></a><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
     <span class="n">ica</span> <span class="o">=</span> <span class="n">ICA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">method</span></a><span class="o">=</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">method</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">random_state</span></a><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">random_state</span></a><span class="p">,</span>
               <span class="n">fit_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="n">tol</span><span class="p">},</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
     <span class="n">t0</span> <span class="o">=</span> <a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span>
@@ -172,7 +171,7 @@ related to ECG, and plots the resulting scores and topographies.</p>
 </pre></div>
 </div>
 <p>Fit ICA using FastICA, with a few iterations, for different initializations :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">n_inits</span></a> <span class="o">=</span> <span class="mi">3</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">n_inits</span></a> <span class="o">=</span> <span class="mi">3</span>
 <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">method</span></a> <span class="o">=</span> <span class="s1">&#39;fastica&#39;</span>
 
 <span class="k">for</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">random_state</span></a> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">n_inits</span></a><span class="p">):</span>
@@ -180,46 +179,49 @@ related to ECG, and plots the resulting scores and topographies.</p>
 </pre></div>
 </div>
 <ul class="sphx-glr-horizontal">
-<li><img src="../_images/sphx_glr_plot_ecg_detection_001.png" srcset="../_images/sphx_glr_plot_ecg_detection_001.png" alt="Method : fastica, init 1. Took 62 sec." class = "sphx-glr-multi-img"/></li>
-<li><img src="../_images/sphx_glr_plot_ecg_detection_002.png" srcset="../_images/sphx_glr_plot_ecg_detection_002.png" alt="ICA components, ICA005 (mag), ICA000 (mag), ICA007 (mag), AU, AU, AU" class = "sphx-glr-multi-img"/></li>
-<li><img src="../_images/sphx_glr_plot_ecg_detection_003.png" srcset="../_images/sphx_glr_plot_ecg_detection_003.png" alt="Method : fastica, init 2. Took 57 sec." class = "sphx-glr-multi-img"/></li>
-<li><img src="../_images/sphx_glr_plot_ecg_detection_004.png" srcset="../_images/sphx_glr_plot_ecg_detection_004.png" alt="ICA components, ICA005 (mag), ICA000 (mag), AU, AU" class = "sphx-glr-multi-img"/></li>
-<li><img src="../_images/sphx_glr_plot_ecg_detection_005.png" srcset="../_images/sphx_glr_plot_ecg_detection_005.png" alt="Method : fastica, init 3. Took 54 sec." class = "sphx-glr-multi-img"/></li>
-<li><img src="../_images/sphx_glr_plot_ecg_detection_006.png" srcset="../_images/sphx_glr_plot_ecg_detection_006.png" alt="ICA components, ICA005 (mag), ICA000 (mag), AU, AU" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_plot_ecg_detection_001.png" srcset="../_images/sphx_glr_plot_ecg_detection_001.png" alt="Method : fastica, init 1. Took 37 sec." class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_plot_ecg_detection_002.png" srcset="../_images/sphx_glr_plot_ecg_detection_002.png" alt="ICA components, ICA004 (mag), ICA000 (mag), ICA007 (mag), AU, AU, AU" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_plot_ecg_detection_003.png" srcset="../_images/sphx_glr_plot_ecg_detection_003.png" alt="Method : fastica, init 2. Took 33 sec." class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_plot_ecg_detection_004.png" srcset="../_images/sphx_glr_plot_ecg_detection_004.png" alt="ICA components, ICA005 (mag), ICA000 (mag), ICA009 (mag), AU, AU, AU" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_plot_ecg_detection_005.png" srcset="../_images/sphx_glr_plot_ecg_detection_005.png" alt="Method : fastica, init 3. Took 33 sec." class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_plot_ecg_detection_006.png" srcset="../_images/sphx_glr_plot_ecg_detection_006.png" alt="ICA components, ICA006 (mag), ICA000 (mag), AU, AU" class = "sphx-glr-multi-img"/></li>
 </ul>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/circleci/.local/lib/python3.8/site-packages/sklearn/decomposition/_fastica.py:120: ConvergenceWarning: FastICA did not converge. Consider increasing tolerance or the maximum number of iterations.
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/circleci/.local/lib/python3.12/site-packages/sklearn/decomposition/_fastica.py:132: ConvergenceWarning: FastICA did not converge. Consider increasing tolerance or the maximum number of iterations.
   warnings.warn(
-/home/circleci/.local/lib/python3.8/site-packages/sklearn/decomposition/_fastica.py:120: ConvergenceWarning: FastICA did not converge. Consider increasing tolerance or the maximum number of iterations.
+/home/circleci/.local/lib/python3.12/site-packages/sklearn/decomposition/_fastica.py:132: ConvergenceWarning: FastICA did not converge. Consider increasing tolerance or the maximum number of iterations.
   warnings.warn(
-/home/circleci/.local/lib/python3.8/site-packages/sklearn/decomposition/_fastica.py:120: ConvergenceWarning: FastICA did not converge. Consider increasing tolerance or the maximum number of iterations.
+/home/circleci/.local/lib/python3.12/site-packages/sklearn/decomposition/_fastica.py:132: ConvergenceWarning: FastICA did not converge. Consider increasing tolerance or the maximum number of iterations.
   warnings.warn(
 </pre></div>
 </div>
 <p>Do the same thing with Picard :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">method</span></a> <span class="o">=</span> <span class="s1">&#39;picard&#39;</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">method</span></a> <span class="o">=</span> <span class="s1">&#39;picard&#39;</span>
 
 <span class="k">for</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">random_state</span></a> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">n_inits</span></a><span class="p">):</span>
     <span class="n">fit_ica_and_plot_scores</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">method</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">random_state</span></a><span class="p">)</span>
 </pre></div>
 </div>
 <ul class="sphx-glr-horizontal">
-<li><img src="../_images/sphx_glr_plot_ecg_detection_007.png" srcset="../_images/sphx_glr_plot_ecg_detection_007.png" alt="Method : picard, init 1. Took 48 sec." class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_plot_ecg_detection_007.png" srcset="../_images/sphx_glr_plot_ecg_detection_007.png" alt="Method : picard, init 1. Took 23 sec." class = "sphx-glr-multi-img"/></li>
 <li><img src="../_images/sphx_glr_plot_ecg_detection_008.png" srcset="../_images/sphx_glr_plot_ecg_detection_008.png" alt="ICA components, ICA005 (mag), ICA000 (mag), AU, AU" class = "sphx-glr-multi-img"/></li>
-<li><img src="../_images/sphx_glr_plot_ecg_detection_009.png" srcset="../_images/sphx_glr_plot_ecg_detection_009.png" alt="Method : picard, init 2. Took 41 sec." class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_plot_ecg_detection_009.png" srcset="../_images/sphx_glr_plot_ecg_detection_009.png" alt="Method : picard, init 2. Took 20 sec." class = "sphx-glr-multi-img"/></li>
 <li><img src="../_images/sphx_glr_plot_ecg_detection_010.png" srcset="../_images/sphx_glr_plot_ecg_detection_010.png" alt="ICA components, ICA004 (mag), ICA000 (mag), AU, AU" class = "sphx-glr-multi-img"/></li>
-<li><img src="../_images/sphx_glr_plot_ecg_detection_011.png" srcset="../_images/sphx_glr_plot_ecg_detection_011.png" alt="Method : picard, init 3. Took 38 sec." class = "sphx-glr-multi-img"/></li>
-<li><img src="../_images/sphx_glr_plot_ecg_detection_012.png" srcset="../_images/sphx_glr_plot_ecg_detection_012.png" alt="ICA components, ICA004 (mag), ICA000 (mag), AU, AU" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_plot_ecg_detection_011.png" srcset="../_images/sphx_glr_plot_ecg_detection_011.png" alt="Method : picard, init 3. Took 23 sec." class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_plot_ecg_detection_012.png" srcset="../_images/sphx_glr_plot_ecg_detection_012.png" alt="ICA components, ICA005 (mag), ICA000 (mag), AU, AU" class = "sphx-glr-multi-img"/></li>
 </ul>
 <p>The third topography found by FastICA does not really look like an ECG
 artifact, and is not consistent across different initializations. Picard
 finds the same topographies each time, and more consistently.</p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 5 minutes  20.973 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (3 minutes 3.328 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-ecg-detection-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/e162a83d0a99004ffb2a63a0561656f4/plot_ecg_detection.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_ecg_detection.ipynb</span></code></a></p>
+</div>
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/ad99c59ea433c56daaf071bbc9c7670b/plot_ecg_detection.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_ecg_detection.py</span></code></a></p>
 </div>
-<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
-<p><a class="reference download internal" download="" href="../_downloads/e162a83d0a99004ffb2a63a0561656f4/plot_ecg_detection.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_ecg_detection.ipynb</span></code></a></p>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/cf0c1cffdd5330a56573d3bdabbc2585/plot_ecg_detection.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">plot_ecg_detection.zip</span></code></a></p>
 </div>
 </div>
 <p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
@@ -241,7 +243,7 @@ data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_
     </p>
     <p>
         &copy; Copyright 2017, Pierre Ablin.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

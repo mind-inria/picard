@@ -10,8 +10,8 @@
     .. note::
         :class: sphx-glr-download-link-note
 
-        Click :ref:`here <sphx_glr_download_auto_examples_plot_ica_synth.py>`
-        to download the full example code
+        :ref:`Go to the end <sphx_glr_download_auto_examples_plot_ica_synth.py>`
+        to download the full example code.
 
 .. rst-class:: sphx-glr-example-title
 
@@ -38,7 +38,7 @@ https://arxiv.org/abs/1711.10873
 
 .. GENERATED FROM PYTHON SOURCE LINES 21-33
 
-.. code-block:: default
+.. code-block:: Python
 
 
     # Author: Pierre Ablin <pierre.ablin@inria.fr>
@@ -65,7 +65,7 @@ Generate sample data
 
 .. GENERATED FROM PYTHON SOURCE LINES 35-54
 
-.. code-block:: default
+.. code-block:: Python
 
     np.random.seed(0)
     n_samples = 2000
@@ -99,7 +99,7 @@ Plot results
 
 .. GENERATED FROM PYTHON SOURCE LINES 56-71
 
-.. code-block:: default
+.. code-block:: Python
 
 
     models = [X, S, Y_picard, Y_picardo]
@@ -157,7 +157,7 @@ Plot results
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.615 seconds)
+   **Total running time of the script:** (0 minutes 0.707 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_ica_synth.py:
@@ -166,14 +166,17 @@ Plot results
 
   .. container:: sphx-glr-footer sphx-glr-footer-example
 
+    .. container:: sphx-glr-download sphx-glr-download-jupyter
+
+      :download:`Download Jupyter notebook: plot_ica_synth.ipynb <plot_ica_synth.ipynb>`
 
     .. container:: sphx-glr-download sphx-glr-download-python
 
       :download:`Download Python source code: plot_ica_synth.py <plot_ica_synth.py>`
 
-    .. container:: sphx-glr-download sphx-glr-download-jupyter
+    .. container:: sphx-glr-download sphx-glr-download-zip
 
-      :download:`Download Jupyter notebook: plot_ica_synth.ipynb <plot_ica_synth.ipynb>`
+      :download:`Download zipped: plot_ica_synth.zip <plot_ica_synth.zip>`
 
 
 .. only:: html

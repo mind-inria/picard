@@ -10,8 +10,8 @@
     .. note::
         :class: sphx-glr-download-link-note
 
-        Click :ref:`here <sphx_glr_download_auto_examples_plot_custom_density.py>`
-        to download the full example code
+        :ref:`Go to the end <sphx_glr_download_auto_examples_plot_custom_density.py>`
+        to download the full example code.
 
 .. rst-class:: sphx-glr-example-title
 
@@ -26,7 +26,7 @@ This example shows how to use custom densities using Picard
 
 .. GENERATED FROM PYTHON SOURCE LINES 9-20
 
-.. code-block:: default
+.. code-block:: Python
 
 
     # Author: Pierre Ablin <pierre.ablin@inria.fr>
@@ -52,7 +52,7 @@ Build a custom density where the score function is x + tanh(x)
 
 .. GENERATED FROM PYTHON SOURCE LINES 22-35
 
-.. code-block:: default
+.. code-block:: Python
 
 
 
@@ -80,7 +80,7 @@ Plot the corresponding functions
 
 .. GENERATED FROM PYTHON SOURCE LINES 37-51
 
-.. code-block:: default
+.. code-block:: Python
 
 
     x = np.linspace(-2, 2, 100)
@@ -114,7 +114,7 @@ Run Picard on toy dataset using this density
 
 .. GENERATED FROM PYTHON SOURCE LINES 53-65
 
-.. code-block:: default
+.. code-block:: Python
 
 
     rng = np.random.RandomState(0)
@@ -143,7 +143,7 @@ Run Picard on toy dataset using this density
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.264 seconds)
+   **Total running time of the script:** (0 minutes 0.228 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_custom_density.py:
@@ -152,14 +152,17 @@ Run Picard on toy dataset using this density
 
   .. container:: sphx-glr-footer sphx-glr-footer-example
 
+    .. container:: sphx-glr-download sphx-glr-download-jupyter
+
+      :download:`Download Jupyter notebook: plot_custom_density.ipynb <plot_custom_density.ipynb>`
 
     .. container:: sphx-glr-download sphx-glr-download-python
 
       :download:`Download Python source code: plot_custom_density.py <plot_custom_density.py>`
 
-    .. container:: sphx-glr-download sphx-glr-download-jupyter
+    .. container:: sphx-glr-download sphx-glr-download-zip
 
-      :download:`Download Jupyter notebook: plot_custom_density.ipynb <plot_custom_density.ipynb>`
+      :download:`Download zipped: plot_custom_density.zip <plot_custom_density.zip>`
 
 
 .. only:: html

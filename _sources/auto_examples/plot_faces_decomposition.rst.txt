@@ -10,8 +10,8 @@
     .. note::
         :class: sphx-glr-download-link-note
 
-        Click :ref:`here <sphx_glr_download_auto_examples_plot_faces_decomposition.py>`
-        to download the full example code
+        :ref:`Go to the end <sphx_glr_download_auto_examples_plot_faces_decomposition.py>`
+        to download the full example code.
 
 .. rst-class:: sphx-glr-example-title
 
@@ -35,7 +35,7 @@ norm.
 
 .. GENERATED FROM PYTHON SOURCE LINES 17-48
 
-.. code-block:: default
+.. code-block:: Python
 
 
     # Author: Pierre Ablin <pierre.ablin@inria.fr>
@@ -81,7 +81,7 @@ Load faces data
 
 .. GENERATED FROM PYTHON SOURCE LINES 50-63
 
-.. code-block:: default
+.. code-block:: Python
 
     dataset = fetch_olivetti_faces(shuffle=True, random_state=rng)
     faces = dataset.data
@@ -117,7 +117,7 @@ elapsed time.
 
 .. GENERATED FROM PYTHON SOURCE LINES 66-91
 
-.. code-block:: default
+.. code-block:: Python
 
 
 
@@ -152,21 +152,13 @@ elapsed time.
 
  .. code-block:: none
 
-    /home/circleci/.local/lib/python3.8/site-packages/sklearn/decomposition/_fastica.py:494: FutureWarning: Starting in v1.3, whiten='unit-variance' will be used by default.
+    /home/circleci/.local/lib/python3.12/site-packages/sklearn/decomposition/_fastica.py:132: ConvergenceWarning: FastICA did not converge. Consider increasing tolerance or the maximum number of iterations.
       warnings.warn(
-    /home/circleci/.local/lib/python3.8/site-packages/sklearn/decomposition/_fastica.py:120: ConvergenceWarning: FastICA did not converge. Consider increasing tolerance or the maximum number of iterations.
+    /home/circleci/.local/lib/python3.12/site-packages/sklearn/decomposition/_fastica.py:132: ConvergenceWarning: FastICA did not converge. Consider increasing tolerance or the maximum number of iterations.
       warnings.warn(
-    /home/circleci/.local/lib/python3.8/site-packages/sklearn/decomposition/_fastica.py:494: FutureWarning: Starting in v1.3, whiten='unit-variance' will be used by default.
+    /home/circleci/.local/lib/python3.12/site-packages/sklearn/decomposition/_fastica.py:132: ConvergenceWarning: FastICA did not converge. Consider increasing tolerance or the maximum number of iterations.
       warnings.warn(
-    /home/circleci/.local/lib/python3.8/site-packages/sklearn/decomposition/_fastica.py:120: ConvergenceWarning: FastICA did not converge. Consider increasing tolerance or the maximum number of iterations.
-      warnings.warn(
-    /home/circleci/.local/lib/python3.8/site-packages/sklearn/decomposition/_fastica.py:494: FutureWarning: Starting in v1.3, whiten='unit-variance' will be used by default.
-      warnings.warn(
-    /home/circleci/.local/lib/python3.8/site-packages/sklearn/decomposition/_fastica.py:120: ConvergenceWarning: FastICA did not converge. Consider increasing tolerance or the maximum number of iterations.
-      warnings.warn(
-    /home/circleci/.local/lib/python3.8/site-packages/sklearn/decomposition/_fastica.py:494: FutureWarning: Starting in v1.3, whiten='unit-variance' will be used by default.
-      warnings.warn(
-    /home/circleci/.local/lib/python3.8/site-packages/sklearn/decomposition/_fastica.py:120: ConvergenceWarning: FastICA did not converge. Consider increasing tolerance or the maximum number of iterations.
+    /home/circleci/.local/lib/python3.12/site-packages/sklearn/decomposition/_fastica.py:132: ConvergenceWarning: FastICA did not converge. Consider increasing tolerance or the maximum number of iterations.
       warnings.warn(
 
 
@@ -178,7 +170,7 @@ Plot the results
 
 .. GENERATED FROM PYTHON SOURCE LINES 93-121
 
-.. code-block:: default
+.. code-block:: Python
 
 
 
@@ -223,7 +215,7 @@ Plot the results
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  1.311 seconds)
+   **Total running time of the script:** (0 minutes 15.045 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_faces_decomposition.py:
@@ -232,14 +224,17 @@ Plot the results
 
   .. container:: sphx-glr-footer sphx-glr-footer-example
 
+    .. container:: sphx-glr-download sphx-glr-download-jupyter
+
+      :download:`Download Jupyter notebook: plot_faces_decomposition.ipynb <plot_faces_decomposition.ipynb>`
 
     .. container:: sphx-glr-download sphx-glr-download-python
 
       :download:`Download Python source code: plot_faces_decomposition.py <plot_faces_decomposition.py>`
 
-    .. container:: sphx-glr-download sphx-glr-download-jupyter
+    .. container:: sphx-glr-download sphx-glr-download-zip
 
-      :download:`Download Jupyter notebook: plot_faces_decomposition.ipynb <plot_faces_decomposition.ipynb>`
+      :download:`Download zipped: plot_faces_decomposition.zip <plot_faces_decomposition.zip>`
 
 
 .. only:: html

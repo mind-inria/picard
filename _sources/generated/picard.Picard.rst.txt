@@ -17,9 +17,13 @@
       ~Picard.fit
       ~Picard.fit_transform
       ~Picard.get_feature_names_out
+      ~Picard.get_metadata_routing
       ~Picard.get_params
       ~Picard.inverse_transform
+      ~Picard.set_inverse_transform_request
+      ~Picard.set_output
       ~Picard.set_params
+      ~Picard.set_transform_request
       ~Picard.transform
    
    

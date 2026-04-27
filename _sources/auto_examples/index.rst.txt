@@ -10,11 +10,16 @@ Examples Gallery
    :depth: 3
 
 
+.. raw:: html
+
+  <div id='sg-tag-list' class='sphx-glr-tag-list'></div>
+
 
 .. raw:: html
 
     <div class="sphx-glr-thumbnails">
 
+.. thumbnail-parent-div-open
 
 .. raw:: html
 
@@ -23,9 +28,9 @@ Examples Gallery
 .. only:: html
 
   .. image:: /auto_examples/images/thumb/sphx_glr_plot_custom_density_thumb.png
-    :alt: Using a custom density with Picard
+    :alt:
 
-  :ref:`sphx_glr_auto_examples_plot_custom_density.py`
+  :doc:`/auto_examples/plot_custom_density`
 
 .. raw:: html
 
@@ -40,9 +45,9 @@ Examples Gallery
 .. only:: html
 
   .. image:: /auto_examples/images/thumb/sphx_glr_plot_ica_synth_thumb.png
-    :alt: Blind source separation using Picard and Picard-O
+    :alt:
 
-  :ref:`sphx_glr_auto_examples_plot_ica_synth.py`
+  :doc:`/auto_examples/plot_ica_synth`
 
 .. raw:: html
 
@@ -57,9 +62,9 @@ Examples Gallery
 .. only:: html
 
   .. image:: /auto_examples/images/thumb/sphx_glr_plot_ica_eeg_thumb.png
-    :alt: Blind source separation using preconditioned ICA on EEG
+    :alt:
 
-  :ref:`sphx_glr_auto_examples_plot_ica_eeg.py`
+  :doc:`/auto_examples/plot_ica_eeg`
 
 .. raw:: html
 
@@ -69,14 +74,14 @@ Examples Gallery
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Picard and FastICA are fitted to MEG data, from several initializations. The scores related to ...">
+    <div class="sphx-glr-thumbcontainer" tooltip="Picard and FastICA are fitted to MEG data, from several initializations. The scores related to the detection of ECG artifacts are displayed for each run. Picard is faster, and less dependent on the initialization.">
 
 .. only:: html
 
   .. image:: /auto_examples/images/thumb/sphx_glr_plot_ecg_detection_thumb.png
-    :alt: Comparing Picard and FastICA for the task of detecting ECG artifacts in MEG
+    :alt:
 
-  :ref:`sphx_glr_auto_examples_plot_ecg_detection.py`
+  :doc:`/auto_examples/plot_ecg_detection`
 
 .. raw:: html
 
@@ -91,15 +96,17 @@ Examples Gallery
 .. only:: html
 
   .. image:: /auto_examples/images/thumb/sphx_glr_plot_faces_decomposition_thumb.png
-    :alt: Comparison of Picard-O and FastICA on faces data
+    :alt:
 
-  :ref:`sphx_glr_auto_examples_plot_faces_decomposition.py`
+  :doc:`/auto_examples/plot_faces_decomposition`
 
 .. raw:: html
 
       <div class="sphx-glr-thumbnail-title">Comparison of Picard-O and FastICA on faces data</div>
     </div>
 
+
+.. thumbnail-parent-div-close
 
 .. raw:: html
 
