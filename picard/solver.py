@@ -162,7 +162,7 @@ def picard(X, fun='tanh', n_components=None, ortho=True, extended=None,
     if n_components is None:
         n_components = min(n, p)
 
-    X1 = X.copy()
+    X1 = X.copy(order='K')
     if centering:
         # Center the columns (ie the variables)
         X_mean = X1.mean(axis=-1)
