@@ -138,7 +138,7 @@ Fit ICA using FastICA, with a few iterations, for different initializations :
     *
 
       .. image-sg:: /auto_examples/images/sphx_glr_plot_ecg_detection_001.png
-         :alt: Method : fastica, init 1. Took 37 sec.
+         :alt: Method : fastica, init 1. Took 41 sec.
          :srcset: /auto_examples/images/sphx_glr_plot_ecg_detection_001.png
          :class: sphx-glr-multi-img
 
@@ -152,7 +152,7 @@ Fit ICA using FastICA, with a few iterations, for different initializations :
     *
 
       .. image-sg:: /auto_examples/images/sphx_glr_plot_ecg_detection_003.png
-         :alt: Method : fastica, init 2. Took 33 sec.
+         :alt: Method : fastica, init 2. Took 39 sec.
          :srcset: /auto_examples/images/sphx_glr_plot_ecg_detection_003.png
          :class: sphx-glr-multi-img
 
@@ -166,7 +166,7 @@ Fit ICA using FastICA, with a few iterations, for different initializations :
     *
 
       .. image-sg:: /auto_examples/images/sphx_glr_plot_ecg_detection_005.png
-         :alt: Method : fastica, init 3. Took 33 sec.
+         :alt: Method : fastica, init 3. Took 40 sec.
          :srcset: /auto_examples/images/sphx_glr_plot_ecg_detection_005.png
          :class: sphx-glr-multi-img
 
@@ -215,7 +215,7 @@ Do the same thing with Picard :
     *
 
       .. image-sg:: /auto_examples/images/sphx_glr_plot_ecg_detection_007.png
-         :alt: Method : picard, init 1. Took 23 sec.
+         :alt: Method : picard, init 1. Took 25 sec.
          :srcset: /auto_examples/images/sphx_glr_plot_ecg_detection_007.png
          :class: sphx-glr-multi-img
 
@@ -229,7 +229,7 @@ Do the same thing with Picard :
     *
 
       .. image-sg:: /auto_examples/images/sphx_glr_plot_ecg_detection_009.png
-         :alt: Method : picard, init 2. Took 20 sec.
+         :alt: Method : picard, init 2. Took 24 sec.
          :srcset: /auto_examples/images/sphx_glr_plot_ecg_detection_009.png
          :class: sphx-glr-multi-img
 
@@ -243,7 +243,7 @@ Do the same thing with Picard :
     *
 
       .. image-sg:: /auto_examples/images/sphx_glr_plot_ecg_detection_011.png
-         :alt: Method : picard, init 3. Took 23 sec.
+         :alt: Method : picard, init 3. Took 22 sec.
          :srcset: /auto_examples/images/sphx_glr_plot_ecg_detection_011.png
          :class: sphx-glr-multi-img
 
@@ -267,7 +267,7 @@ finds the same topographies each time, and more consistently.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (3 minutes 3.328 seconds)
+   **Total running time of the script:** (3 minutes 25.377 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_ecg_detection.py:

@@ -157,7 +157,7 @@ Plot results
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.707 seconds)
+   **Total running time of the script:** (0 minutes 0.536 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_ica_synth.py:
