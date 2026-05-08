@@ -6,10 +6,11 @@ function [K, W, Y] = picard_python_port(X, varargin)
 %   - Whitening: SVD on data (not covariance), K = (u/d)' * sqrt(T)
 %   - w_init: identity (deterministic)
 %   - Core loop: L-BFGS with Tanh density (alpha=1)
-%   - Standard (non-ortho) Picard
+%   - Supports both standard Picard (ortho=false) and Picard-O (ortho=true)
 %
 % Usage:
 %   [K, W, Y] = picard_python_port(X)
+%   [K, W, Y] = picard_python_port(X, 'ortho', true)
 %   [K, W, Y] = picard_python_port(X, 'max_iter', 512, 'tol', 1e-7, ...)
 %
 % Returns:
@@ -27,6 +28,7 @@ opt.lambda_min = 0.01;
 opt.ls_tries = 10;
 opt.verbose = true;
 opt.centering = true;
+opt.ortho = false;
 
 % Parse varargin
 for i = 1:2:length(varargin)
@@ -69,7 +71,7 @@ Y = X;
 s_list = {};
 y_list = {};
 r_list = {};
-current_loss = compute_loss(Y, W_algo);
+current_loss = compute_loss(Y, W_algo, opt.ortho);
 G_old = [];
 
 for n_iter = 1:opt.max_iter
@@ -81,18 +83,33 @@ for n_iter = 1:opt.max_iter
     % np.inner(psiY, Y) for 2D = psiY @ Y.T
     G = (psiY * Y') / T;
 
-    % h_off for non-ortho (_core_picard.py line 111)
-    h_off = ones(N, 1);
+    % Hessian off-diagonal (_core_picard.py lines 108-111)
+    if opt.ortho
+        h_off = diag(G);
+    else
+        h_off = ones(N, 1);
+    end
 
-    % Hessian diagonal (_core_picard.py line 119)
-    Y_square = Y.^2;
-    h = (psidY * Y_square') / T;
+    % Hessian diagonal and regularization (_core_picard.py lines 113-120)
+    if opt.ortho
+        % Ortho: symmetric Hessian from mean of psidY
+        psidY_mean = mean(psidY, 2);
+        diag_mat = psidY_mean * ones(1, N);
+        h = 0.5 * (diag_mat + diag_mat' - h_off * ones(1, N) - ones(N, 1) * h_off');
+        h(h < opt.lambda_min) = opt.lambda_min;
+    else
+        % Non-ortho: Hessian from inner product
+        Y_square = Y.^2;
+        h = (psidY * Y_square') / T;
+        h = regularize_hessian(h, h_off, opt.lambda_min);
+    end
 
-    % Regularize hessian (_core_picard.py line 236-242)
-    h = regularize_hessian(h, h_off, opt.lambda_min);
-
-    % Subtract identity for non-ortho (_core_picard.py line 126)
-    G = G - eye(N);
+    % Gradient projection (_core_picard.py lines 123-126)
+    if opt.ortho
+        G = (G - G') / 2;
+    else
+        G = G - eye(N);
+    end
 
     % Stopping criterion (_core_picard.py line 128)
     gradient_norm = max(abs(G(:)));
@@ -117,12 +134,12 @@ for n_iter = 1:opt.max_iter
     end
     G_old = G;
 
-    % L-BFGS direction (_core_picard.py line 145)
-    direction = lbfgs_direction(G, h, h_off, s_list, y_list, r_list);
+    % L-BFGS direction (_core_picard.py line 148)
+    direction = lbfgs_direction(G, h, h_off, s_list, y_list, r_list, opt.ortho);
 
-    % Line search (_core_picard.py line 148)
+    % Line search (_core_picard.py line 151)
     [converged, new_Y, new_W, new_loss, direction] = ...
-        line_search_fn(Y, W_algo, direction, current_loss, opt.ls_tries, opt.verbose);
+        line_search_fn(Y, W_algo, direction, current_loss, opt.ls_tries, opt.verbose, opt.ortho);
 
     if ~converged
         direction = -G;
@@ -130,7 +147,7 @@ for n_iter = 1:opt.max_iter
         y_list = {};
         r_list = {};
         [~, new_Y, new_W, new_loss, direction] = ...
-            line_search_fn(Y, W_algo, direction, current_loss, 10, false);
+            line_search_fn(Y, W_algo, direction, current_loss, 10, false, opt.ortho);
     end
 
     Y = new_Y;
@@ -149,14 +166,16 @@ W = W_algo * w_init;
 end  % picard_python_port
 
 
-% ===== Nested functions =====
+% ===== Helper functions =====
 
-function loss_val = compute_loss(Y, W)
-    % Loss for standard (non-ortho) Picard with Tanh density (alpha=1)
+function loss_val = compute_loss(Y, W, ortho)
     % _core_picard.py _loss function
     N = size(Y, 1);
-    % -log|det(W)|
-    loss_val = -log(abs(det(W)));
+    if ortho
+        loss_val = 0;
+    else
+        loss_val = -log(abs(det(W)));
+    end
     % Tanh log_lik: |y| + log1p(exp(-2|y|))
     for k = 1:N
         y = Y(k, :);
@@ -166,7 +185,7 @@ end
 
 
 function h = regularize_hessian(h, h_off, lambda_min)
-    % _core_picard.py _regularize_hessian
+    % _core_picard.py _regularize_hessian (non-ortho only)
     N = size(h, 1);
     discr = sqrt((h - h').^2 + 4.0 * (h_off * h_off'));
     eigenvalues = 0.5 * (h + h' - discr);
@@ -181,14 +200,14 @@ end
 
 
 function out = solve_hessian(h, h_off, G)
-    % _core_picard.py _solve_hessian
+    % _core_picard.py _solve_hessian (non-ortho only)
     det_val = h .* h' - (h_off * h_off');
     out = (h' .* G - (h_off * ones(1, size(G, 2))) .* G') ./ det_val;
 end
 
 
-function direction = lbfgs_direction(G, h, h_off, s_list, y_list, r_list)
-    % _core_picard.py _l_bfgs_direction (non-ortho branch)
+function direction = lbfgs_direction(G, h, h_off, s_list, y_list, r_list, ortho)
+    % _core_picard.py _l_bfgs_direction
     q = G;
     a_list = {};
     for ii = 1:length(s_list)
@@ -199,8 +218,12 @@ function direction = lbfgs_direction(G, h, h_off, s_list, y_list, r_list)
         a_list{end+1} = alpha;
         q = q - alpha * y;
     end
-    % Solve hessian (non-ortho)
-    z = solve_hessian(h, h_off, q);
+    if ortho
+        z = q ./ h;
+        z = (z - z') / 2;
+    else
+        z = solve_hessian(h, h_off, q);
+    end
     for ii = 1:length(s_list)
         s = s_list{ii};
         y = y_list{ii};
@@ -214,15 +237,19 @@ end
 
 
 function [converged, Y_new, W_new, new_loss, rel_step] = ...
-        line_search_fn(Y, W, direction, current_loss, ls_tries, verbose)
-    % _core_picard.py _line_search (non-ortho branch, v0.8.2)
+        line_search_fn(Y, W, direction, current_loss, ls_tries, verbose, ortho)
+    % _core_picard.py _line_search (v0.8.2)
     N = size(W, 1);
     alpha = 1.0;
     for tmp = 1:ls_tries
-        transform = eye(N) + alpha * direction;
+        if ortho
+            transform = expm(alpha * direction);
+        else
+            transform = eye(N) + alpha * direction;
+        end
         Y_new = transform * Y;
         W_new = transform * W;
-        new_loss = compute_loss(Y_new, W_new);
+        new_loss = compute_loss(Y_new, W_new, ortho);
         if isfinite(new_loss) && new_loss < current_loss
             converged = true;
             rel_step = alpha * direction;

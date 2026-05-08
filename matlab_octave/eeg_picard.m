@@ -1,6 +1,7 @@
 function EEG = eeg_picard(EEG, varargin)
 
-[~, EEG.icaweights] = picard( double(EEG.data), 'python_defaults', true, 'verbose', true, 'mode', 'standard', varargin{:});
+[K, W, ~] = picard_python_port(double(EEG.data), 'verbose', true, varargin{:});
+EEG.icaweights = W * K;
 EEG.icasphere = eye(size(EEG.icaweights, 2));
 EEG.icawinv = pinv(EEG.icaweights);
 EEG.icachansind = 1:size(EEG.icaweights, 2);
