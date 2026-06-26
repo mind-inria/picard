@@ -6,7 +6,7 @@
 
 Computation times
 =================
-**04:51.244** total execution time for 5 files **from auto_examples**:
+**04:38.203** total execution time for 5 files **from auto_examples**:
 
 .. container::
 
@@ -33,17 +33,17 @@ Computation times
      - Time
      - Mem (MB)
    * - :ref:`sphx_glr_auto_examples_plot_ecg_detection.py` (``plot_ecg_detection.py``)
-     - 03:25.377
+     - 03:15.022
      - 0.0
    * - :ref:`sphx_glr_auto_examples_plot_ica_eeg.py` (``plot_ica_eeg.py``)
-     - 01:05.843
+     - 01:07.103
      - 0.0
    * - :ref:`sphx_glr_auto_examples_plot_faces_decomposition.py` (``plot_faces_decomposition.py``)
-     - 00:19.260
+     - 00:15.215
      - 0.0
    * - :ref:`sphx_glr_auto_examples_plot_ica_synth.py` (``plot_ica_synth.py``)
-     - 00:00.536
+     - 00:00.589
      - 0.0
    * - :ref:`sphx_glr_auto_examples_plot_custom_density.py` (``plot_custom_density.py``)
-     - 00:00.228
+     - 00:00.274
      - 0.0
