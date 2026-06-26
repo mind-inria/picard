@@ -44,7 +44,6 @@ class Tanh(object):
         alpha = self.alpha  # noqa
         if ne is None:
             absY = np.abs(Y)
-            np.exp(-2. * alpha * absY)
             return absY + np.log1p(np.exp(-2. * alpha * absY)) / alpha
         return ne.evaluate('abs(Y) + log1p(exp(-2. * alpha * abs(Y))) / alpha')
 

@@ -89,8 +89,6 @@ def core_picard(X, density=Tanh(), ortho=False, extended=False, m=7,
         # Compute the relative gradient and the Hessian off-diagonal
         G = np.inner(psiY, Y) / T
         del psiY
-        # Compute the squared signals
-        Y_square = Y ** 2
         # Compute the kurtosis and update the gradient accordingly
         if extended:
             K = np.mean(psidY, axis=1) * np.diag(C)
@@ -115,10 +113,13 @@ def core_picard(X, density=Tanh(), ortho=False, extended=False, m=7,
             diag = psidY_mean[:, None] * np.ones(N)[None, :]
             h = 0.5 * (diag + diag.T - h_off[:, None] - h_off[None, :])
             h[h < lambda_min] = lambda_min
+            del psidY
         else:
+            # Compute the squared signals (only needed for this Hessian)
+            Y_square = Y ** 2
             h = np.inner(psidY, Y_square) / T
             h = _regularize_hessian(h, h_off, lambda_min)
-        del psidY, Y_square
+            del psidY, Y_square
         # Project the gradient if ortho
         if ortho:
             G = (G - G.T) / 2

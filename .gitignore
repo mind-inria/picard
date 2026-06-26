@@ -26,3 +26,5 @@ picard.egg-info/
 tags
 .coverage
 python_picard.egg-info/
+
+junit-results.xml
