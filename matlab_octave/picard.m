@@ -80,6 +80,17 @@ function [Y, W] = picard(X, varargin)
 %                             'original' (default)
 %                             'pythonlike'
 %
+% 'extended'                  (bool) If true, runs extended Infomax: each
+%                             component's density switches between sub- and
+%                             super-Gaussian (Lee et al., 1999), as Python's
+%                             picard(extended=True). In mode 'standard' this
+%                             minimizes the objective of EEGLAB's
+%                             runica(X, 'extended', 1). Runs picard_python_port
+%                             (centred data, PCA whitening, n_components from
+%                             'pca'); 'distribution' and 'renormalization'
+%                             do not apply.
+%                             Default: false
+%
 % Example:
 % --------
 %
@@ -135,6 +146,7 @@ w_init = [];
 python_defaults = false;
 distribution = 'logistic';
 renormalization = 'original';
+extended = false;
 
 % Read varargin
 
@@ -175,6 +187,8 @@ for i = 1:2:length(varargin)
             distribution = value;
         case 'renormalization'
             renormalization = value;
+        case 'extended'
+            extended = value;
         otherwise
             error(['Parameter ''' param ''' unknown'])
     end
@@ -214,6 +228,18 @@ end
 if n_components ~= getrank(X),
     warning(['Input matrix is of deficient rank. ' ...
             'Please consider to reduce dimensionality (pca) prior to ICA.'])
+end
+
+if extended
+    if ~whiten
+        error('extended requires whiten=true')
+    end
+    [K, W_algo, Y] = picard_python_port(X, 'ortho', strcmp(mode, 'ortho'), ...
+        'extended', true, 'n_components', n_components, 'w_init', w_init, ...
+        'max_iter', maxiter, 'tol', tol, 'm', m, 'lambda_min', lambda_min, ...
+        'ls_tries', ls_tries, 'verbose', verbose);
+    W = W_algo * K;
+    return
 end
 
 if centering,
@@ -272,11 +298,11 @@ end
 function w_init = random_init(n_components)
 
     % same random algorithm as in Python
+    % (a local stream: the caller's global random state is left untouched)
     s = RandStream('mt19937ar', 'Seed', 5489, 'NormalTransform', 'Polar');
-    RandStream.setGlobalStream(s);
 
     % Generate and transpose so positions match NumPy's row-major layout
-    w_init = randn(ceil(n_components*n_components/2)*2,1);
+    w_init = randn(s, ceil(n_components*n_components/2)*2,1);
     w_init = w_init(:);
 
     w_initTmp = w_init(1:2:end);
