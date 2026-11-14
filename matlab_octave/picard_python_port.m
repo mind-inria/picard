@@ -353,9 +353,9 @@ end
 
 function w_init = random_init(n_comp)
     % Match Python's default MT19937 random init (from picard.m)
+    % (a local stream: the caller's global random state is left untouched)
     s = RandStream('mt19937ar', 'Seed', 5489, 'NormalTransform', 'Polar');
-    RandStream.setGlobalStream(s);
-    w_init = randn(ceil(n_comp * n_comp / 2) * 2, 1);
+    w_init = randn(s, ceil(n_comp * n_comp / 2) * 2, 1);
     w_init = w_init(:);
     w_initTmp = w_init(1:2:end);
     w_init(1:2:end) = w_init(2:2:end);
